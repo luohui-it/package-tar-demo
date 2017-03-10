@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <artifactId>package-tar-demo</artifactId>
+        <groupId>com.bestpay.tar</groupId>
+        <version>1.0-SNAPSHOT</version>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>package-manager</artifactId>
+    <packaging>jar</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.bestpay.tar</groupId>
+            <artifactId>package-dal</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.google.guava</groupId>
+            <artifactId>guava</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>ch.qos.logback</groupId>
+            <artifactId>logback-classic</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <finalName>package-tar-demo</finalName>
+        <resources>
+            <resource>
+                <directory>${basedir}/src/main/resources</directory>
+            </resource>
+            <resource>
+                <directory>${basedir}/../package-dal/src/main/resources</directory>
+            </resource>
+        </resources>
+
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <includes>
+                        <include>**/*.class</include>
+                    </includes>
+                </configuration>
+            </plugin>
+            <!---->
+            <plugin>
+                <artifactId>maven-assembly-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>make-zip</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>single</goal>
+                        </goals>
+                        <configuration>
+                            <descriptors>
+                                <descriptor>src/main/assembly/descriptor.xml</descriptor>
+                            </descriptors>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+
+            <!--
+                <plugin>
+                    <groupId>com.github.goldin</groupId>
+                    <artifactId>copy-maven-plugin</artifactId>
+                    <version>0.2.5</version>
+                    <executions>
+                        <execution>
+                            <id>deploy-archive</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>copy</goal>
+                            </goals>
+                            <configuration>
+                                <resources>
+                                    <resource>
+                                        <targetPath>${remote.location}</targetPath>
+                                        <file>${project.build.directory}/${project.build.finalName}-${env}-assembly.tar.gz</file>
+                                    </resource>
+                                </resources>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+
+
+                <plugin>
+                    <groupId>com.github.goldin</groupId>
+                    <artifactId>sshexec-maven-plugin</artifactId>
+                    <version>0.2.5</version>
+                    <executions>
+                        <execution>
+                            <id>unpack-archive</id>
+                            <phase>integration-test</phase>
+                            <goals>
+                                <goal>sshexec</goal>
+                            </goals>
+                            <configuration>
+                                <location>${remote.location}</location>
+                                <commands>
+
+                                    <command>export PATH=$PATH:${java.home}/bin</command>
+
+                                    <command>export LANG=zh_CN.GBK</command>
+                                    <command>mkdir bak</command>
+                                    <command>mv ${project.build.finalName} ./bak/${project.build.finalName}-${maven.build.timestamp}</command>
+                                    <command>tar -zxf ${project.build.finalName}-${env}-assembly.tar.gz</command>
+                                    <command>${project.build.finalName}/startup.sh restart</command>
+                                </commands>
+                            </configuration>
+                        </execution>
+                    </executions>
+                </plugin>
+-->
+        </plugins>
+    </build>
+
+
+</project>
